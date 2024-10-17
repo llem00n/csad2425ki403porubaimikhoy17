@@ -1,0 +1,80 @@
+name: Build and Test Projects
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-winforms:
+    name: Build .NET 8 WinForms Client
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore WinForms project dependencies
+        run: dotnet restore ./client/client.csproj
+
+      - name: Build WinForms project
+        run: dotnet build ./client/client.csproj --configuration Release
+
+      - name: Create WinForms artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: WinFormsClient
+          path: ./client/bin/Release/
+
+  build-arduino:
+    name: Build Arduino Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Arduino CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+
+      - name: Build Arduino Project
+        run: arduino-cli compile --fqbn esp32:esp32:esp32-c3 ./server/input_modifier.ino
+
+      - name: Create Arduino artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ArduinoApp
+          path: ./server/build/
+
+  run-tests:
+    name: Run .NET Console App (Unit Test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore Console App dependencies
+        run: dotnet restore ./tests/tests.csproj
+
+      - name: Run Console App (Tests)
+        run: dotnet run --project ./tests/tests.csproj > test-results.txt
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestResults
+          path: test-results.txt
