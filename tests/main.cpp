@@ -3,6 +3,7 @@
 #include "test.hpp"
 #include <list>
 #include <iostream>
+#include <memory>
 
 class HelloTest : public Test {
   std::string buff;
