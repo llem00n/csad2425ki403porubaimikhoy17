@@ -49,7 +49,7 @@ jobs:
         run: arduino-cli core install esp32:esp32
 
       - name: Build Arduino Project
-        run: arduino-cli compile --fqbn esp32:esp32:esp32c3 ./server/input_modifier.ino
+        run: arduino-cli compile --fqbn esp32:esp32:esp32c3 --build-path ./server/build  ./server/input_modifier.ino
 
       - name: Create Arduino artifact
         uses: actions/upload-artifact@v3
