@@ -56,27 +56,38 @@ jobs:
         with:
           name: ArduinoApp
           path: ./server/build/
-
+          
   run-tests:
-    name: Run .NET Console App (Unit Test)
+    name: Run CMake Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.x'
-
-      - name: Restore Console App dependencies
-        run: dotnet restore ./tests/tests.csproj
-
-      - name: Run Console App (Tests)
-        run: dotnet run --project ./tests/tests.csproj > test-results.txt
-
-      - name: Upload Test Results
+  
+      - name: Install CMake
+        run: sudo apt-get install cmake
+  
+      - name: Create build directory
+        run: mkdir build && cd build
+  
+      - name: Configure CMake project
+        run: |
+          cd build
+          cmake ../tests
+  
+      - name: Build tests
+        run: |
+          cd build
+          cmake --build .
+  
+      - name: Run tests and save output
+        run: |
+          cd build
+          ./tests > test-results.txt  # Capture the output of the tests executable
+  
+      - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: TestResults
-          path: test-results.txt
+          name: test-results
+          path: build/test-results.txt
+
