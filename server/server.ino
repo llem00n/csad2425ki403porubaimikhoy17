@@ -4,7 +4,7 @@ char buff[256];
 int c = 0;
 
 void blink(uint32_t times = 1, uint32_t ontime = 100, uint32_t offtime = 100) {
-  for (int x = 0; x < times; x++) {
+  for (uint32_t x = 0; x < times; x++) {
     digitalWrite(LED_BUILTIN, LOW);
     delay(ontime);
     digitalWrite(LED_BUILTIN, HIGH);
