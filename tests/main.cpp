@@ -5,13 +5,16 @@
 #include <iostream>
 #include <memory>
 
-template <const char *Input, const char *Output>
 class InputOutputTest : public Test {
+  std::string input;
+  std::string output;
   std::string buff;
 
 public:
+  InputOutputTest(const std::string &input, const std::string &output) : input(input), output(output) { }
+
   void setup() override {
-    put__serial_in(Input);
+    put__serial_in(input);
   }
 
   void check() override {
@@ -20,7 +23,7 @@ public:
       buff += c;
 
       if (c == '\n') {
-        complete(buff == Output);
+        complete(buff == output);
       }
     }
   }
@@ -28,8 +31,8 @@ public:
 
 int main() {
   std::list<std::shared_ptr<Test>> tests = {
-    std::make_shared<InputOutputTest<"Hello\n", "Ifmmp\n">>(),
-    std::make_shared<InputOutputTest<"Good bye!\n", "Hppe czf!\n">>()
+    std::make_shared<InputOutputTest>("Hello\n", "Ifmmp\n"),
+    std::make_shared<InputOutputTest>("Good bye!\n", "Hppe czf!\n")
   };
 
   size_t testc = 1;
