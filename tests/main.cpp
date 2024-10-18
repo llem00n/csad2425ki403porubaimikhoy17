@@ -4,9 +4,8 @@
 #include <list>
 #include <iostream>
 #include <memory>
-#include <string_view>
 
-template <std::string_view Input, std::string_view Output>
+template <const char *Input, const char *Output>
 class InputOutputTest : public Test {
   std::string buff;
 
