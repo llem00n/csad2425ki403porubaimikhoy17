@@ -4,13 +4,15 @@
 #include <list>
 #include <iostream>
 #include <memory>
+#include <string_view>
 
-class HelloTest : public Test {
+template <std::string_view Input, std::string_view Output>
+class InputOutputTest : public Test {
   std::string buff;
 
 public:
   void setup() override {
-    put__serial_in("Hello\n");
+    put__serial_in(Input);
   }
 
   void check() override {
@@ -19,27 +21,7 @@ public:
       buff += c;
 
       if (c == '\n') {
-        complete(buff == "Ifmmp\n");
-      }
-    }
-  }
-};
-
-class GoodByeTest : public Test {
-  std::string buff;
-
-public:
-  void setup() override {
-    put__serial_in("Good bye!\n");
-  }
-
-  void check() override {
-    while (!isempty__serial_out() && !iseof__serial_out()) {
-      char c = read__serial_out();
-      buff += c;
-
-      if (c == '\n') {
-        complete(buff == "Hppe czf!\n");
+        complete(buff == Output);
       }
     }
   }
@@ -47,8 +29,8 @@ public:
 
 int main() {
   std::list<std::shared_ptr<Test>> tests = {
-    std::make_shared<HelloTest>(),
-    std::make_shared<GoodByeTest>()
+    std::make_shared<InputOutputTest<"Hello\n", "Ifmmp\n">>(),
+    std::make_shared<InputOutputTest<"Good bye!\n", "Hppe czf!\n">>()
   };
 
   size_t testc = 1;
