@@ -72,17 +72,17 @@ jobs:
   
       - name: Configure CMake project
         run: |
-          cd build
+          cd ./input-modifier/build
           cmake ../tests
   
       - name: Build tests
         run: |
-          cd build
+          cd ./input-modifier/build
           cmake --build .
   
       - name: Run tests and save output
         run: |
-          cd build
+          cd ./input-modifier/build
           ./tests > test-results.txt  # Capture the output of the tests executable
   
       - name: Upload test results
