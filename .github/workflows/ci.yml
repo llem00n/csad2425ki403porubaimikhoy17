@@ -9,8 +9,8 @@ on:
       - develop
 
 jobs:
-  build-winforms:
-    name: Build .NET 8 WinForms Client
+  im-build-winforms:
+    name: (IM) - Build .NET 8 WinForms Client
     runs-on: windows-latest
     steps:
       - name: Checkout repository
@@ -22,19 +22,19 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore WinForms project dependencies
-        run: dotnet restore ./client/client.csproj
+        run: dotnet restore ./input-modifier/client/client.csproj
 
       - name: Build WinForms project
-        run: dotnet build ./client/client.csproj --configuration Release
+        run: dotnet build ./input-modifier/client/client.csproj --configuration Release
 
       - name: Create WinForms artifact
         uses: actions/upload-artifact@v3
         with:
-          name: WinFormsClient
-          path: ./client/bin/Release/
+          name: IM_WinFormsClient
+          path: ./input-modifier/client/bin/Release/
 
-  build-arduino:
-    name: Build Arduino Project
+  im-build-arduino:
+    name: (IM) - Build Arduino Project
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,16 +49,16 @@ jobs:
         run: arduino-cli core install esp32:esp32
 
       - name: Build Arduino Project
-        run: arduino-cli compile --fqbn esp32:esp32:esp32c3 --build-path ./server/build  ./server/input_modifier.ino
+        run: arduino-cli compile --fqbn esp32:esp32:esp32c3 --build-path ./input-modifier/server/build  ./input-modifier/server/server.ino
 
       - name: Create Arduino artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ArduinoApp
-          path: ./server/build/
+          name: IM_ArduinoApp
+          path: ./input-modifier/server/build/
           
-  run-tests:
-    name: Run CMake Tests
+  im-run-tests:
+    name: (IM) - Run CMake Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -68,7 +68,7 @@ jobs:
         run: sudo apt-get install cmake
   
       - name: Create build directory
-        run: mkdir build && cd build
+        run: mkdir ./input-modifier/build && cd ./input-modifier/build
   
       - name: Configure CMake project
         run: |
@@ -88,6 +88,6 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-results
+          name: IM_TestResults
           path: build/test-results.txt
 
