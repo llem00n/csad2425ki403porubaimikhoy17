@@ -39,6 +39,7 @@ namespace client
             {
                 using var serialPort = new SerialPort(PortSelect.Text, int.Parse(BaudRateSelect.Text), Parity.None, 8, StopBits.One);
                 serialPort.Open();
+                serialPort.DiscardInBuffer();
                 var message = InputField.Text + '\n';
 
                 OutputLog.Text = (OutputLog.Text ?? string.Empty) + $"[{DateTime.Now}] - [SENT]: {message}{Environment.NewLine}";
